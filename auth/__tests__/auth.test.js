@@ -55,7 +55,7 @@ test('allows entry to good user', () => {
   };
   const token = getUserToken(request, response);
   request.get = () => `Bearer ${token}`;
-  isUserAuthorized(request, response, mockedNext);
+  isUserAuthorized(mockedNext, {}, {}, { request }, '');
   expect(hasCalled).toBe(true);
 });
 
@@ -65,7 +65,7 @@ test('denies entry to bad user', () => {
   const request = {
     body: {
       username: 'samridh',
-      password: 'wrong pwd',
+      password: 'bad pwd',
     },
   };
   const response = {
@@ -74,6 +74,6 @@ test('denies entry to bad user', () => {
   };
   const token = getUserToken(request, response);
   request.get = () => `Bearer ${token}`;
-  isUserAuthorized(request, response, mockedNext);
+  isUserAuthorized(mockedNext, {}, {}, { request }, '');
   expect(hasCalled).toBe(false);
 });
