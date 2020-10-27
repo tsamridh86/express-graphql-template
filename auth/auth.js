@@ -8,18 +8,19 @@ const isUserAuthorized = (request, response, next) => {
     reason: 'Bad token',
     message: 'thanks for trying tho',
   };
-  if (request.get('Authorization') === undefined) { response.status(500).send(reply); return null; }
+  if (request.get('Authorization') === undefined) { response.status(500).send(reply); return reply; }
 
   const bearerToken = request.get('Authorization');
   const [bearer, token] = bearerToken.split(' ');
-  if (bearer !== 'Bearer') { response.status(500).send(reply); return null; }
+  if (bearer !== 'Bearer') { response.status(500).send(reply); return reply; }
   try {
     jwt.verify(token, secret);
     next();
+    return token;
   } catch (err) {
     response.status(500).send(reply);
   }
-  return null;
+  return reply;
 };
 
 
@@ -36,7 +37,8 @@ const getUserToken = (request, response) => {
     reason: 'no username and password',
     message: 'thank you lol',
   };
-  return response.status(500).send(reply);
+  response.status(500).send(reply);
+  return reply;
 };
 
 module.exports = {
