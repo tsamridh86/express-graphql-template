@@ -1,19 +1,28 @@
-const express = require('express');
+const { GraphQLServer, PubSub } = require('graphql-yoga');
 const bodyParser = require('body-parser');
-const expressGraphql = require('express-graphql');
 const { schema } = require('./schema/schema');
 const { rootResolver } = require('./resolvers/rootResolver');
-const { isUserAuthorized, getUserToken } = require('./auth/auth');
+const { getUserToken, isUserAuthorized } = require('./auth/auth');
+
+const pubsub = new PubSub();
+
+const options = {
+  port: 4000,
+  endpoint: '/graphql',
+  subscriptions: '/subscriptions',
+  playground: '/playground',
+};
 
 
-const app = express();
-app.use(bodyParser.json());
-
-app.post('/login', getUserToken);
-
-app.use('/graphql', isUserAuthorized, expressGraphql({
-  schema,
-  rootValue: rootResolver,
-  graphiql: true,
-}));
-app.listen(4000, () => console.log('Running on localhost 4000'));
+const server = new GraphQLServer({
+  typeDefs: schema,
+  resolvers: rootResolver,
+  context: (request) => ({
+    ...request,
+    pubsub,
+  }),
+  middlewares: [isUserAuthorized]
+});
+server.express.use(bodyParser.json());
+server.express.post('/login', getUserToken);
+server.start(options, () => console.log('server running at port 4000'));

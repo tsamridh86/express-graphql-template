@@ -3,24 +3,23 @@ const { isVerifiedUser } = require('./authFacade');
 
 const secret = 'lol, you know you know it.';
 
-const isUserAuthorized = (request, response, next) => {
+const isUserAuthorized =  async (resolve, root, args, context, info) => {
   const reply = {
     reason: 'Bad token',
     message: 'thanks for trying tho',
   };
-  if (request.get('Authorization') === undefined) { response.status(500).send(reply); return reply; }
+  if (context.request.get('Authorization') === undefined) { return reply; }
 
-  const bearerToken = request.get('Authorization');
+  const bearerToken = context.request.get('Authorization');
   const [bearer, token] = bearerToken.split(' ');
-  if (bearer !== 'Bearer') { response.status(500).send(reply); return reply; }
+  if (bearer !== 'Bearer') { return reply; }
   try {
     jwt.verify(token, secret);
-    next();
-    return token;
+    const result = await resolve(root, args, context, info)
+    return result;
   } catch (err) {
-    response.status(500).send(reply);
+    return reply;
   }
-  return reply;
 };
 
 
