@@ -1,6 +1,6 @@
 const { coursesData } = require('../Objects/data');
 
-const updateCourseTopic = ({ id, topic }) => {
+const updateCourseTopic = (parent, { id, topic }, context, info) => {
   coursesData.forEach((course) => {
     if (course.id === id) {
       // eslint-disable-next-line no-param-reassign
@@ -8,7 +8,9 @@ const updateCourseTopic = ({ id, topic }) => {
     }
     return course;
   });
-  return coursesData.filter((course) => course.id === id)[0];
+  const updatedCourse = coursesData.find((course) => course.id === id);
+  context.pubsub.publish('NEW_COURSE', updatedCourse);
+  return updatedCourse;
 };
 
 module.exports = {

@@ -1,6 +1,6 @@
 const { coursesData } = require('../Objects/data');
 
-const getAllCourses = (args) => {
+const getAllCourses = (parent, args, context, info) => {
   if (args.topic) {
     const { topic } = args;
     return coursesData.filter((course) => course.topic === topic);
