@@ -21,7 +21,7 @@ const server = new GraphQLServer({
     ...request,
     pubsub,
   }),
-  // middlewares: [isUserAuthorized],
+  middlewares: [isUserAuthorized],
 });
 server.express.use(bodyParser.json());
 server.express.post('/login', getUserToken);
