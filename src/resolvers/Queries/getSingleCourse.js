@@ -1,8 +1,8 @@
 const { coursesData } = require('../Objects/data');
+const { neo4jgraphql } = require('neo4j-graphql-js');
 
 const getSingleCourse = (parent, args, context, info) => {
-  const { id } = args;
-  return coursesData.filter((course) => course.id === id)[0];
+  return neo4jgraphql(parent,args,context,info)
 };
 
 module.exports = {

@@ -10,7 +10,7 @@ const updateCourseTopic = (parent, { id, topic }, context, info) => {
   });
   const updatedCourse = coursesData.find((course) => course.id === id);
   context.pubsub.publish('NEW_COURSE', updatedCourse);
-  return updatedCourse;
+  return neo4jgraphql(parent,args,context,info);
 };
 
 module.exports = {

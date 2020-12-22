@@ -1,12 +1,12 @@
 const Objects = `
 
 type CourseConnection{
-  edges : [CourseEdge]
-  pageInfo : PageInfo
+  edges : [CourseEdge] @relation(name: "CourseEdge", direction: "OUT")
+  pageInfo : PageInfo @relation(name: "PageInfo", direction: "OUT")
 }
 
 type CourseEdge {
-  node : Course!
+  node : Course! @relation(name: "Course", direction: "OUT")
   cursor : Int!
 }
 
