@@ -20,7 +20,7 @@ const server = new GraphQLServer({
   context: (request) => ({
     ...request,
     pubsub,
-  }),
+  }), 
   middlewares: [isUserAuthorized],
 });
 server.express.use(bodyParser.json());
